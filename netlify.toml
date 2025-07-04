@@ -1,0 +1,3 @@
+[build]
+  publish = "output"
+  command = "pyenv install --list && python --version"
