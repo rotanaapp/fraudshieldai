@@ -3,6 +3,8 @@ from components import sidebar
 
 
 def main():
+    st.set_page_config(layout="wide")
+
     # Render sidebar
     sidebar.render_sidebar()
 
