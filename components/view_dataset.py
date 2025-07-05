@@ -14,10 +14,16 @@ def render_view_dataset():
             # Load the Parquet file (compressed with Zstandard)
             df = pd.read_parquet(dataset_path, engine="pyarrow")
 
-            # Show only the first 100 rows
+            # Count total records
+            total_records = df.shape[0]
+
+            # Show total records
             st.success("✅ Loaded dataset successfully.")
-            st.dataframe(df.head(100), use_container_width=True)
-            st.caption("Showing only the first 100 rows for performance.")
+            st.write(f"📊 **Total Records:** {total_records}")
+
+            # Show only the first 1000 rows
+            st.dataframe(df.head(1000), use_container_width=True)
+            st.caption("Showing only the first 1000 rows for performance.")
 
         except Exception as e:
             st.error(f"❌ Failed to read dataset: {e}")
