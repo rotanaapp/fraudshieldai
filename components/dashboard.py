@@ -5,6 +5,13 @@ from components.alerts import render_alerts
 from components.insights import render_insights
 
 
+# Cached data loading from Parquet file
+@st.cache_data(show_spinner="Loading dataset...")
+def load_data():
+    return pd.read_parquet("credit_card_dataset.parquet.zstd", engine="pyarrow")
+
+
+# Assign risk levels based on amount
 def get_risk_level(row):
     if row["amt"] >= 5000:
         return "High"
@@ -16,11 +23,12 @@ def get_risk_level(row):
         return "None"
 
 
+# Main dashboard function
 def render_dashboard():
     st.markdown("## 📊 Fraud Detection Overview")
 
     # Load dataset
-    df = pd.read_parquet("credit_card_dataset.parquet.zstd", engine="pyarrow")
+    df = load_data()
 
     # Parse datetime column
     df["trans_date_trans_time"] = pd.to_datetime(df["trans_date_trans_time"])
@@ -28,8 +36,6 @@ def render_dashboard():
     # Get min and max dates
     min_date = df["trans_date_trans_time"].min().strftime("%b %d, %Y")
     max_date = df["trans_date_trans_time"].max().strftime("%b %d, %Y")
-
-    # Dynamic caption
     st.caption(f"{min_date} – {max_date}")
 
     # Derive risk level
@@ -39,9 +45,9 @@ def render_dashboard():
     high_risk_count = (df["risk_level"] == "High").sum()
     medium_risk_count = (df["risk_level"] == "Medium").sum()
     fraud_amount = df[df["is_fraud"] == 1]["amt"].sum()
-    fraud_amount_display = f"${fraud_amount/1_000:.0f}K"
+    fraud_amount_display = f"${fraud_amount / 1_000:.0f}K"
 
-    # Display
+    # Display metrics
     col1, col2, col3 = st.columns(3)
     col1.metric("🔴 High Risk Transactions", f"{high_risk_count}")
     col2.metric("🟠 Medium Risk Transactions", f"{medium_risk_count}")

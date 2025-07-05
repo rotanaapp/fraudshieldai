@@ -2,6 +2,13 @@ import pandas as pd
 import streamlit as st
 
 
+# ✅ Cache data loading
+@st.cache_data(show_spinner="Loading alerts dataset...")
+def load_data():
+    return pd.read_parquet("credit_card_dataset.parquet.zstd", engine="pyarrow")
+
+
+# Color formatting function
 def color_risk(val):
     risk = float(val.strip("%"))
     if risk > 95:
@@ -15,8 +22,8 @@ def color_risk(val):
 def render_alerts():
     st.markdown("### 📋 Recent High-Risk Alerts")
 
-    # Load dataset
-    df = pd.read_parquet("credit_card_dataset.parquet.zstd", engine="pyarrow")
+    # Load and process data
+    df = load_data()
 
     # Create risk_score from amt
     max_amt = df["amt"].max()
@@ -28,7 +35,7 @@ def render_alerts():
     # Format risk score
     recent_alerts["Risk Score"] = recent_alerts["risk_score"].round(1).astype(str) + "%"
 
-    # Select columns including customer info
+    # Columns to show
     show_cols = [
         "trans_date_trans_time",
         "first",
@@ -44,6 +51,6 @@ def render_alerts():
         recent_alerts[show_cols].sort_values("risk_score", ascending=False).head(20)
     )
 
-    # Style Risk Score
+    # Style table
     styled_alerts = alerts_to_show.style.applymap(color_risk, subset=["Risk Score"])
     st.dataframe(styled_alerts, use_container_width=True)
