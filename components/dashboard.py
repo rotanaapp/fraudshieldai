@@ -5,7 +5,6 @@ from components.alerts import render_alerts
 from components.insights import render_insights
 
 
-# Cached data loading from Parquet file
 @st.cache_data(show_spinner="Loading dataset...")
 def load_data():
     return pd.read_parquet("credit_card_dataset.parquet.zstd", engine="pyarrow")
