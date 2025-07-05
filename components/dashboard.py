@@ -30,22 +30,31 @@ def render_dashboard():
     # Load dataset
     df = load_data()
 
-    # Get min and max transaction dates
+    # Get transaction date range
     min_date = df["trans_date_trans_time"].min().strftime("%b %d, %Y")
     max_date = df["trans_date_trans_time"].max().strftime("%b %d, %Y")
-    st.caption(f"Transaction Date Range: **{min_date} – {max_date}**")
+    st.caption(f"🗓️ **Transaction Date Range:** {min_date} – {max_date}")
 
-    # Metrics calculations
+    # Calculate metrics
     high_risk_count = (df["risk_level"] == "High").sum()
     medium_risk_count = (df["risk_level"] == "Medium").sum()
     fraud_amount = df[df["is_fraud"] == 1]["amt"].sum()
-    fraud_amount_display = f"${fraud_amount / 1_000:.0f}K"
+    fraud_amount_display = f"${fraud_amount / 1_000:,.0f}K"
 
-    # Display metrics
+    # Display metric cards
     col1, col2, col3 = st.columns(3)
-    col1.metric("🔴 High Risk Transactions", f"{high_risk_count}")
-    col2.metric("🟠 Medium Risk Transactions", f"{medium_risk_count}")
-    col3.metric("🟢 Legitimate Amount", fraud_amount_display)
+
+    with col1:
+        st.metric("🔴 High Risk Transactions", f"{high_risk_count:,}")
+        st.caption("Transactions with the highest likelihood of fraud")
+
+    with col2:
+        st.metric("🟠 Medium Risk Transactions", f"{medium_risk_count:,}")
+        st.caption("Moderately suspicious transactions")
+
+    with col3:
+        st.metric("💰 Fraudulent Amount", fraud_amount_display)
+        st.caption("Total dollar amount of confirmed fraudulent activity")
 
     st.markdown("---")
     render_alerts()
