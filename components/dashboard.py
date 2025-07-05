@@ -45,7 +45,7 @@ def render_dashboard():
     col1, col2, col3 = st.columns(3)
     col1.metric("🔴 High Risk Transactions", f"{high_risk_count}")
     col2.metric("🟠 Medium Risk Transactions", f"{medium_risk_count}")
-    col3.metric("🟢 Prevented Fraud Amount", fraud_amount_display)
+    col3.metric("🟢 Legitimate Amount", fraud_amount_display)
 
     st.markdown("---")
     render_alerts()

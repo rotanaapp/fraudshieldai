@@ -1,22 +1,3 @@
-# import streamlit as st
-# from components.dashboard import render_dashboard
-# from components.check_txns import render_check_txns
-
-
-# def render_sidebar():
-#     st.sidebar.title("🛡️ Fraud Shield AI")
-#     page = st.sidebar.radio("Menu", ["📊 Dashboard", "💳 Check TXNs"])
-
-#     if page == "📊 Dashboard":
-#         render_dashboard()
-#     elif page == "💳 Check TXNs":
-#         render_check_txns()
-
-#     st.sidebar.markdown("---")
-#     st.sidebar.info("**Group II**  \nMSIT Y2T1 B9-Aritificial Intelligence")
-#     return page
-
-
 import streamlit as st
 from components.dashboard import render_dashboard
 from components.check_txns import render_check_txns
@@ -27,7 +8,7 @@ def render_sidebar():
     st.sidebar.title("🛡️ Fraud Shield AI")
     page = st.sidebar.radio(
         "Menu", ["📊 Dashboard", "💳 Check TXNs", "📂 View Dataset"]
-    )  # Added new item
+    )
 
     if page == "📊 Dashboard":
         render_dashboard()
