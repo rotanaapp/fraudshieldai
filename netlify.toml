@@ -1,3 +1,0 @@
-[build]
-  command = "pyenv install --list | head -n 20"
-  publish = "output"

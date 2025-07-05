@@ -1,19 +1,3 @@
-# import streamlit as st
-# import pandas as pd
-# import os
-
-
-# def render_view_dataset():
-#     st.header("📂 View Dataset")
-
-#     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-
-#     if uploaded_file is not None:
-#         df = pd.read_csv(uploaded_file)
-#         st.success("✅ File uploaded successfully!")
-#         st.dataframe(df, use_container_width=True)
-#     else:
-#         st.info("Please upload a CSV file to view the dataset.")
 import streamlit as st
 import pandas as pd
 import os
@@ -22,18 +6,18 @@ import os
 def render_view_dataset():
     st.header("📂 View Dataset")
 
-    # Adjust this path to where your dataset.csv is located
-    dataset_path = "dataset.csv"
+    # Adjust this path to your compressed parquet file
+    dataset_path = "credit_card_dataset.parquet.zstd"
 
     if os.path.exists(dataset_path):
         try:
-            # Load only the first 1000 rows using chunks
-            reader = pd.read_csv(dataset_path, chunksize=1000)
-            df = next(reader)  # First chunk (first 1000 rows)
-            st.success("✅ Loaded first 1000 rows successfully.")
-            st.dataframe(df, use_container_width=True)
+            # Load the Parquet file (compressed with Zstandard)
+            df = pd.read_parquet(dataset_path, engine="pyarrow")
 
-            st.caption("Showing only the first 1000 rows for performance.")
+            # Show only the first 100 rows
+            st.success("✅ Loaded dataset successfully.")
+            st.dataframe(df.head(100), use_container_width=True)
+            st.caption("Showing only the first 100 rows for performance.")
 
         except Exception as e:
             st.error(f"❌ Failed to read dataset: {e}")
